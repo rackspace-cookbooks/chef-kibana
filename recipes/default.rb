@@ -35,7 +35,6 @@ git "#{node['kibana']['installdir']}/#{node['kibana']['branch']}" do
   repository node['kibana']['repo']
   reference node['kibana']['branch']
   action :sync
-  user kibana_user
 end
 
 link "#{node['kibana']['installdir']}/current" do
@@ -46,7 +45,15 @@ template "#{node['kibana']['installdir']}/current/config.js" do
   source node['kibana']['config_template']
   cookbook node['kibana']['config_cookbook']
   mode "0750"
-  user kibana_user
 end
 
 include_recipe "kibana::#{node['kibana']['webserver']}"
+
+directory "#{node['kibana']['installdir']}" do
+  recursive true
+  owner kibana_user
+  group kibana_user
+  mode 00755
+  action :create
+end
+
