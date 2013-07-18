@@ -49,11 +49,9 @@ end
 
 include_recipe "kibana::#{node['kibana']['webserver']}"
 
-directory "#{node['kibana']['installdir']}" do
-  recursive true
-  owner kibana_user
-  group kibana_user
-  mode 00755
-  action :create
+execute "change installdir owner" do
+  command "chown -Rf #{kibana_user}.#{kibana_user} #{node['kibana']['installdir']}"
+  only_if { Etc.getpwuid(File.stat(node['kibana']['installdir']).uid).name != kibana_user}
+  action :run
 end
 
