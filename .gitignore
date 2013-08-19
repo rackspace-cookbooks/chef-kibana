@@ -8,6 +8,8 @@ Berksfile.lock
 .*.sw[a-z]
 *.un~
 /cookbooks
+.chef
+.berkshelf
 
 # Bundler
 Gemfile.lock
