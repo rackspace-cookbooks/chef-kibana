@@ -21,22 +21,19 @@
 node.set['apache2']['default_site_enabled'] = node['kibana']['apache']['enable_default_site']
 
 include_recipe "apache2"
+include_recipe "apache2::mod_dir"
 include_recipe "apache2::mod_proxy"
 include_recipe "apache2::mod_proxy_http"
 
-template "/etc/apache2/sites-available/kibana" do
-  source node['kibana']['apache']['template']
-  cookbook node['kibana']['apache']['template_cookbook']
-  notifies :reload, "service[apache2]"
-  variables(
-    :es_server => node['kibana']['es_server'],
-    :es_port   => node['kibana']['es_port'],
-    :server_name => node['kibana']['webserver_hostname'],
-    :server_aliases => node['kibana']['webserver_aliases'],
-    :kibana_dir => node['kibana']['installdir'],
-    :listen_address => node['kibana']['webserver_listen'],
-    :listen_port => node['kibana']['webserver_port']
-  )
+web_app "#{node['kibana']['webserver_hostname']}-#{node['kibana']['webserver_port']}" do
+  cookbook       node['kibana']['apache']['template_cookbook']
+  docroot        node['kibana']['installdir']
+  template       node['kibana']['apache']['template']
+  es_server      node['kibana']['es_server']
+  es_port        node['kibana']['es_port']
+  server_name    node['kibana']['webserver_hostname']
+  server_aliases node['kibana']['webserver_aliases']
+  kibana_dir     node['kibana']['installdir']
+  listen_address node['kibana']['webserver_listen']
+  listen_port    node['kibana']['webserver_port']
 end
-
-apache_site "kibana"

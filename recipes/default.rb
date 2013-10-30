@@ -19,9 +19,20 @@
 
 include_recipe "git"
 
+unless Chef::Config[:solo]
+  es_server_results = search(:node, "roles:#{node['kibana']['es_role']} AND chef_environment:#{node.chef_environment}")
+  unless es_server_results.empty?
+    node.set['kibana']['es_server'] = es_server_results[0]['ipaddress']
+  end
+end
+
 if node['kibana']['user'].empty?
-  webserver = node['kibana']['webserver']
-  kibana_user = "#{node[webserver]['user']}"
+  unless node['kibana']['webserver'].empty?
+    webserver = node['kibana']['webserver']
+    kibana_user = node[webserver]['user']
+  else
+    kibana_user = "nobody"
+  end
 else
   kibana_user = node['kibana']['user']
 end
@@ -35,10 +46,16 @@ git "#{node['kibana']['installdir']}/#{node['kibana']['branch']}" do
   repository node['kibana']['repo']
   reference node['kibana']['branch']
   action :sync
+  if node['kibana']['git']['checkout']
+    action :checkout
+  else
+    action :sync
+  end
+  user kibana_user
 end
 
 link "#{node['kibana']['installdir']}/current" do
-  to "#{node['kibana']['installdir']}/#{node['kibana']['branch']}"
+  to "#{node['kibana']['installdir']}/#{node['kibana']['branch']}/src"
 end
 
 template "#{node['kibana']['installdir']}/current/config.js" do
@@ -47,11 +64,17 @@ template "#{node['kibana']['installdir']}/current/config.js" do
   mode "0750"
 end
 
-include_recipe "kibana::#{node['kibana']['webserver']}"
+link "#{node['kibana']['installdir']}/current/app/dashboards/default.json" do
+  to "logstash.json"
+  only_if { !File::symlink?("#{node['kibana']['installdir']}/current/app/dashboards/default.json") }
+end
+
+unless node['kibana']['webserver'].empty?
+  include_recipe "kibana::#{node['kibana']['webserver']}"
+end
 
 execute "change installdir owner" do
   command "chown -Rf #{kibana_user}.#{kibana_user} #{node['kibana']['installdir']}"
   only_if { Etc.getpwuid(File.stat(node['kibana']['installdir']).uid).name != kibana_user}
   action :run
 end
-
