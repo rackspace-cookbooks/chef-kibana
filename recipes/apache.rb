@@ -17,17 +17,16 @@
 # limitations under the License.
 #
 
-
 node.set['apache2']['default_site_enabled'] = node['kibana']['apache']['enable_default_site']
 
-include_recipe "apache2"
-include_recipe "apache2::mod_proxy"
-include_recipe "apache2::mod_proxy_http"
+include_recipe 'apache2'
+include_recipe 'apache2::mod_proxy'
+include_recipe 'apache2::mod_proxy_http'
 
-template "/etc/apache2/sites-available/kibana" do
+template '/etc/apache2/sites-available/kibana' do
   source node['kibana']['apache']['template']
   cookbook node['kibana']['apache']['template_cookbook']
-  notifies :reload, "service[apache2]"
+  notifies :reload, 'service[apache2]'
   variables(
     :es_server => node['kibana']['es_server'],
     :es_port   => node['kibana']['es_port'],
@@ -39,4 +38,4 @@ template "/etc/apache2/sites-available/kibana" do
   )
 end
 
-apache_site "kibana"
+apache_site 'kibana'

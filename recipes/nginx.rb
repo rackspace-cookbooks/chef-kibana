@@ -17,15 +17,14 @@
 # limitations under the License.
 #
 
-
 node.set['nginx']['default_site_enabled'] = node['kibana']['nginx']['enable_default_site']
 
-include_recipe "nginx"
+include_recipe 'nginx'
 
-template "/etc/nginx/sites-available/kibana" do
+template '/etc/nginx/sites-available/kibana' do
   source node['kibana']['nginx']['template']
   cookbook node['kibana']['nginx']['template_cookbook']
-  notifies :reload, "service[nginx]"
+  notifies :reload, 'service[nginx]'
   variables(
     :es_server => node['kibana']['es_server'],
     :es_port   => node['kibana']['es_port'],
@@ -37,4 +36,4 @@ template "/etc/nginx/sites-available/kibana" do
   )
 end
 
-nginx_site "kibana"
+nginx_site 'kibana'

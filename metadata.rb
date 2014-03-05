@@ -10,5 +10,5 @@ version          '1.0.2'
   depends cb
 end
 
-supports "ubuntu"
-supports "debian"
+supports 'ubuntu'
+supports 'debian'

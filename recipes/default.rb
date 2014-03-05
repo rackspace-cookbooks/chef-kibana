@@ -17,18 +17,18 @@
 # limitations under the License.
 #
 
-include_recipe "git"
+include_recipe 'git'
 
 if node['kibana']['user'].empty?
   webserver = node['kibana']['webserver']
-  kibana_user = "#{node[webserver]['user']}"
+  kibana_user = node['webserver']['user']
 else
   kibana_user = node['kibana']['user']
 end
 
 directory node['kibana']['installdir'] do
   owner kibana_user
-  mode "0755"
+  mode '0755'
 end
 
 git "#{node['kibana']['installdir']}/#{node['kibana']['branch']}" do
@@ -44,14 +44,13 @@ end
 template "#{node['kibana']['installdir']}/current/config.js" do
   source node['kibana']['config_template']
   cookbook node['kibana']['config_cookbook']
-  mode "0750"
+  mode '0750'
 end
 
 include_recipe "kibana::#{node['kibana']['webserver']}"
 
-execute "change installdir owner" do
+execute 'change installdir owner' do
   command "chown -Rf #{kibana_user}.#{kibana_user} #{node['kibana']['installdir']}"
-  only_if { Etc.getpwuid(File.stat(node['kibana']['installdir']).uid).name != kibana_user}
+  only_if { Etc.getpwuid(File.stat(node['kibana']['installdir']).uid).name != kibana_user }
   action :run
 end
-
