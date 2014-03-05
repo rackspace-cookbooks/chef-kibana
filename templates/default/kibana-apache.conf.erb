@@ -1,7 +1,7 @@
 <VirtualHost <%= @listen_address %>:<%= @listen_port %>>
   ServerName <%= @server_name %>
 
-  ServerAlias <%= @server_aliases.join(" ") %>
+  ServerAlias <%= @server_aliases %>
  
   DocumentRoot <%= @kibana_dir %>/current
   <Directory <%= @kibana_dir %>/current>

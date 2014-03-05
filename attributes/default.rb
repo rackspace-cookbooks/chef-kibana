@@ -8,7 +8,6 @@ default['kibana']['es_role'] = 'elasticsearch_server'
 default['kibana']['user'] = ''
 default['kibana']['config_template'] = 'config.js.erb'
 default['kibana']['config_cookbook'] = 'kibana'
-default['kibana']['webserver']['user'] = 'nginx'
 default['kibana']['webserver_hostname'] = node.name
 default['kibana']['webserver_aliases'] = node['ipaddress']
 default['kibana']['webserver_listen'] = node['ipaddress']

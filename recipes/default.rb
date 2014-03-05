@@ -20,8 +20,7 @@
 include_recipe 'git'
 
 if node['kibana']['user'].empty?
-  webserver = node['kibana']['webserver']
-  kibana_user = node['webserver']['user']
+  kibana_user = node['nginx']['user']
 else
   kibana_user = node['kibana']['user']
 end
