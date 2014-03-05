@@ -11,10 +11,3 @@ cookbook 'rackspace_php', git: 'git://github.com/rackspace-cookbooks/rackspace_p
 group :integration do
   cookbook 'minitest-handler', git: 'git://github.com/btm/minitest-handler-cookbook.git'
 end
-
-
-apt
-yum
-apache2
-nginx
-git
