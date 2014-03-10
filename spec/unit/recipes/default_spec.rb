@@ -70,7 +70,7 @@ describe 'kibana' do
           end
           it 'creates the template' do
             expect(chef_run).to create_template('/usr/sbin/nxensite')
-          end                    
+          end
           it 'creates the template' do
             expect(chef_run).to create_template('/usr/sbin/nxdissite')
           end
