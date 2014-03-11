@@ -46,7 +46,7 @@ template "#{node['kibana']['installdir']}/current/config.js" do
   mode '0750'
 end
 
-include_recipe "kibana::#{node['kibana']['webserver']}"
+include_recipe "rackspace_kibana3::#{node['kibana']['webserver']}"
 
 execute 'change installdir owner' do
   command "chown -Rf #{kibana_user}.#{kibana_user} #{node['kibana']['installdir']}"
