@@ -17,41 +17,39 @@
 # limitations under the License.
 #
 
-include_recipe "git"
+include_recipe 'git'
 
-if node['kibana']['user'].empty?
-  webserver = node['kibana']['webserver']
-  kibana_user = "#{node[webserver]['user']}"
+if node['rackspace_kibana']['user'].empty?
+  rackspace_kibana_user = node['nginx']['user']
 else
-  kibana_user = node['kibana']['user']
+  rackspace_kibana_user = node['rackspace_kibana']['user']
 end
 
-directory node['kibana']['installdir'] do
-  owner kibana_user
-  mode "0755"
+directory node['rackspace_kibana']['installdir'] do
+  owner rackspace_kibana_user
+  mode '0755'
 end
 
-git "#{node['kibana']['installdir']}/#{node['kibana']['branch']}" do
-  repository node['kibana']['repo']
-  reference node['kibana']['branch']
+git "#{node['rackspace_kibana']['installdir']}/#{node['rackspace_kibana']['branch']}" do
+  repository node['rackspace_kibana']['repo']
+  reference node['rackspace_kibana']['branch']
   action :sync
 end
 
-link "#{node['kibana']['installdir']}/current" do
-  to "#{node['kibana']['installdir']}/#{node['kibana']['branch']}"
+link "#{node['rackspace_kibana']['installdir']}/current" do
+  to "#{node['rackspace_kibana']['installdir']}/#{node['rackspace_kibana']['branch']}"
 end
 
-template "#{node['kibana']['installdir']}/current/config.js" do
-  source node['kibana']['config_template']
-  cookbook node['kibana']['config_cookbook']
-  mode "0750"
+template "#{node['rackspace_kibana']['installdir']}/current/config.js" do
+  source node['rackspace_kibana']['config_template']
+  cookbook node['rackspace_kibana']['config_cookbook']
+  mode '0750'
 end
 
-include_recipe "kibana::#{node['kibana']['webserver']}"
+include_recipe "rackspace_kibana::#{node['rackspace_kibana']['webserver']}"
 
-execute "change installdir owner" do
-  command "chown -Rf #{kibana_user}.#{kibana_user} #{node['kibana']['installdir']}"
-  only_if { Etc.getpwuid(File.stat(node['kibana']['installdir']).uid).name != kibana_user}
+execute 'change installdir owner' do
+  command "chown -Rf #{rackspace_kibana_user}.#{rackspace_kibana_user} #{node['rackspace_kibana']['installdir']}"
+  only_if { Etc.getpwuid(File.stat(node['rackspace_kibana']['installdir']).uid).name != rackspace_kibana_user }
   action :run
 end
-
