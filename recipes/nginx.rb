@@ -17,22 +17,22 @@
 # limitations under the License.
 #
 
-node.set['nginx']['default_site_enabled'] = node['kibana']['nginx']['enable_default_site']
+node.set['nginx']['default_site_enabled'] = node['rackspace_kibana']['nginx']['enable_default_site']
 
 include_recipe 'nginx'
 
 template '/etc/nginx/sites-available/kibana' do
-  source node['kibana']['nginx']['template']
-  cookbook node['kibana']['nginx']['template_cookbook']
+  source node['rackspace_kibana']['nginx']['template']
+  cookbook node['rackspace_kibana']['nginx']['template_cookbook']
   notifies :reload, 'service[nginx]'
   variables(
-    :es_server => node['kibana']['es_server'],
-    :es_port   => node['kibana']['es_port'],
-    :server_name => node['kibana']['webserver_hostname'],
-    :server_aliases => node['kibana']['webserver_aliases'],
-    :kibana_dir => node['kibana']['installdir'],
-    :listen_address => node['kibana']['webserver_listen'],
-    :listen_port => node['kibana']['webserver_port']
+    :es_server => node['rackspace_kibana']['es_server'],
+    :es_port   => node['rackspace_kibana']['es_port'],
+    :server_name => node['rackspace_kibana']['webserver_hostname'],
+    :server_aliases => node['rackspace_kibana']['webserver_aliases'],
+    :kibana_dir => node['rackspace_kibana']['installdir'],
+    :listen_address => node['rackspace_kibana']['webserver_listen'],
+    :listen_port => node['rackspace_kibana']['webserver_port']
   )
 end
 

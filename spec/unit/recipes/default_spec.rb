@@ -17,8 +17,8 @@
 
 require 'spec_helper'
 
-describe 'rackspace_kibana3' do
-  kibana3_test_platforms.each do |platform, versions|
+describe 'rackspace_kibana' do
+  kibana_test_platforms.each do |platform, versions|
     describe "on #{platform}" do
       versions.each do |version|
         describe version do
@@ -27,7 +27,7 @@ describe 'rackspace_kibana3' do
           end
           let(:chef_run) do
             runner = ChefSpec::Runner.new(platform: platform.to_s, version: version.to_s)
-            runner.converge('rackspace_kibana3')
+            runner.converge('rackspace_kibana')
           end
           it 'include the git recipe' do
             expect(chef_run).to include_recipe 'git'
